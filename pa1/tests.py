@@ -343,10 +343,119 @@ class TestFSMParser(unittest.TestCase):
         self.assertEqual(result, ('(3)',))
 
 class TestTimeParserAutomaton(unittest.TestCase):
-    def test_lexer_not_token(self):
-        string = 'test test'
-        tokens = lex(string, pa1.lexer_q0, pa1.lexer_transitions, pa1.lexer_F, pa1.tokenize_events)
-        self.assertEqual(tokens, (('NOT_TOKEN', 'test'), ('NOT_TOKEN', 'test')))
 
+    def test_lexer_not_token(self):
+        string = 'test 12:2a'
+        tokens = lex(string, pa1.lexer_q0, pa1.lexer_transitions, pa1.lexer_F, pa1.tokenize_events)
+        self.assertEqual(tokens, (('NOT_TOKEN', 'test'), ('NOT_TOKEN', '12:2a')))
+
+    def test_lexer_12_hour(self):
+        string = '11:00 12:00am 12:00 AM 24:00 08:22 PM.'
+        tokens = lex(string, pa1.lexer_q0, pa1.lexer_transitions, pa1.lexer_F, pa1.tokenize_events)
+        result = (
+            ('12HOUR_TIME', '11:00'), 
+            ('NOT_TOKEN', '12:00am'),
+            ('12HOUR_TIME', '12:00'),
+            ('AM_PM', ' AM'),
+            ('NOT_TOKEN', '24:00'),
+            ('12HOUR_TIME', '08:22'),
+            ('AM_PM', ' PM'),                        
+        )
+        self.assertEqual(tokens, result)
+
+    def test_lexer_24_hour(self):
+        string = '0000 at 2400 1233 1260'
+        tokens = lex(string, pa1.lexer_q0, pa1.lexer_transitions, pa1.lexer_F, pa1.tokenize_events)
+        result = (
+            ('24HOUR_TIME', '0000'), 
+            ('AT', ''),
+            ('NOT_TOKEN', '2400'),
+            ('24HOUR_TIME', '1233'),
+            ('NOT_TOKEN', '1260'),                       
+        )
+        self.assertEqual(tokens, result)
+
+    def test_lexer_informal_dash(self):
+        string = '1. to - 24. 13; 11'
+        tokens = lex(string, pa1.lexer_q0, pa1.lexer_transitions, pa1.lexer_F, pa1.tokenize_events)
+        result = (
+            ('INFORMAL_TIME', '1'),
+            ('TO', ' to '), 
+            ('DASH', '-'),
+            ('NOT_TOKEN', '24'),
+            ('NOT_TOKEN', '13'),
+            ('INFORMAL_TIME', '11'),                       
+        )
+        self.assertEqual(tokens, result)
+
+    def test_parser_empty(self):
+        tokens = (
+            ('NOT_TOKEN', 'dsfsf'),
+            ('TO', ' to '),
+            ('AM_PM', ' PM'),                                    
+        )
+        result = ()        
+        stmts = parse(tokens, pa1.parser_q0, pa1.parser_transitions, pa1.parser_F)
+        self.assertEqual(stmts, result)
+
+    def test_parser_informal_time(self):
+        tokens = (
+            ('INFORMAL_TIME', '1'),
+            ('TO', ' to '), 
+            ('NOT_TOKEN', 'dsfsf'),
+            ('INFORMAL_TIME', '12'),
+            ('DASH', '-'),
+            ('INFORMAL_TIME', '11'),
+            ('INFORMAL_TIME', '8'),
+            ('TO', ' to '),
+            ('INFORMAL_TIME', '11'),
+            ('AM_PM', ' PM'),                                    
+        )
+        result = (
+            '12-11',
+            '8 to 11 PM',
+        )        
+        stmts = parse(tokens, pa1.parser_q0, pa1.parser_transitions, pa1.parser_F)
+        self.assertEqual(stmts, result)
+
+    def test_parser_24_hour(self):
+        tokens = (
+            ('24HOUR_TIME', '2322'),
+            ('TO', ' to '), 
+            ('NOT_TOKEN', 'dsfsf'),
+            ('24HOUR_TIME', '2300'),
+            ('AT', ''),
+            ('24HOUR_TIME', '1133'),
+            ('24HOUR_TIME', '0028'),
+            ('TO', ' to '),
+            ('24HOUR_TIME', '1100'),
+            ('AM_PM', ' PM'),                                    
+        )
+        result = (
+            '1133',
+            '0028 to 1100',
+        )        
+        stmts = parse(tokens, pa1.parser_q0, pa1.parser_transitions, pa1.parser_F)
+        self.assertEqual(stmts, result)
+
+    def test_parser_12_hour(self):
+        tokens = (
+            ('12HOUR_TIME', '12:22'),
+            ('TO', ' to '), 
+            ('24HOUR_TIME', '2300'),
+            ('12HOUR_TIME', '12:00'),
+            ('AM_PM', ' PM'),            
+            ('DASH', '-'),
+            ('12HOUR_TIME', '1:12'),
+            ('TO', ' to '),                                
+        )
+        result = (
+            '12:22',
+            '12:00 PM',
+            '1:12',
+        )        
+        stmts = parse(tokens, pa1.parser_q0, pa1.parser_transitions, pa1.parser_F)
+        self.assertEqual(stmts, result)
+                       
 if __name__ == '__main__':
     unittest.main()
