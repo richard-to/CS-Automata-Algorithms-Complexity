@@ -22,8 +22,61 @@ Args:
     dfa: See example DFA structure
     final_states: Accepting states
     tokenize_events: A dict of functions for specialized handling of a token
+
 Returns:
     A tuple of tuples. Inner tuples contain two values. The name of the token and the value.
+
+Example Usage:
+    string = 'test 11a 110 test 111'
+
+    start_state = 'A'
+
+    tokenize_events = {
+        'B': tokenize_ignore
+    }
+
+    dfa = {
+        'A': (
+            (r'[^01 ]', 'H'),
+            (' ', 'B'),
+            ('0', 'C'),
+            ('1', 'G'),
+        ),
+        'B': (
+            (' ', 'B'),
+        ),
+        'C': (
+            (r'[^01 ]', 'H'),       
+            ('0', 'C'),
+            ('1', 'D'),
+
+        ),
+        'D': (
+            (r'[^01 ]', 'H'),                   
+            ('0', 'C'),
+            ('1', 'E'),
+        ),
+        'E': (
+            (r'[^01 ]', 'H'),                       
+            ('0', 'F'),
+            ('1', 'E'),
+        ),
+        'F': (
+            (r'[^01 ]', 'H'),                   
+            (r"01", 'F'),
+        ),
+        'G': (
+            (r'[^01 ]', 'H'),       
+            ('0', 'C'),
+            ('1', 'E')
+        ),
+        'H': (
+            (r'[^ ]', 'H'),
+        ),                                                              
+    }
+
+    final_states = ('B', 'E')
+    tokens = lex(string, start_state, dfa, final_states, tokenize_events)
 """
 def lex(string, state, dfa, final_states, tokenize_events):
     meta = {
