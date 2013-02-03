@@ -10,7 +10,7 @@ as an error state.
 Args:
     string: A string to check as valid for a given DFA
     state: The starting state for the given DFA
-    dfa: See examples for DFA structure
+    transitions: See examples for transitions structure
     final_states: A tuple of accepting states
 
 Returns:
@@ -23,7 +23,7 @@ Example Usage:
 
     start_state = 'A'
 
-    dfa = {
+    transitions = {
         'A': (
             ('0', 'A'),
             ('1', 'B'),
@@ -43,18 +43,18 @@ Example Usage:
 
     final_states = ('C')
 """
-def fsm(string, state, dfa, final_states):  
+def fsm(string, state, transitions, final_states):  
     if len(string) == 0:
         return state in final_states
 
-    transitions = dfa[state]
+    state_transitions = transitions[state]
     next_state = None
 
-    for transition in transitions:
-        if re.match(transition[0], string[0]):
-            next_state = transition[1]
+    for state_transition in state_transitions:
+        if re.match(state_transition[0], string[0]):
+            next_state = state_transition[1]
 
     if next_state:
-        return fsm(string[1:], next_state, dfa, final_states)
+        return fsm(string[1:], next_state, transitions, final_states)
     else:
         return False
