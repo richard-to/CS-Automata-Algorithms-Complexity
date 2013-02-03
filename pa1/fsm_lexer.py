@@ -22,7 +22,7 @@ will be an infinite loop.
 Args:
     string: String to be broken into tokens
     state: State state
-    dfa: See example DFA structure
+    transitions: See example transitions structure
     final_states: Accepting states
     tokenize_events: A dict of functions for specialized handling of a token
 
@@ -38,7 +38,7 @@ Example Usage:
         'B': tokenize_ignore
     }
 
-    dfa = {
+    transitions = {
         'A': (
             (r'[^01 ]', 'H'),
             (' ', 'B'),
@@ -81,14 +81,14 @@ Example Usage:
     final_states = ('B', 'E')
     tokens = lex(string, start_state, dfa, final_states, tokenize_events)
 """
-def lex(string, state, dfa, final_states, tokenize_events):
+def lex(string, state, transitions, final_states, tokenize_events):
     meta = {
         'tokens': [],
         'current_token': [],
         'accepted_token': None,
         'start_state': state
     }
-    result = fsm_lexer(string, state, dfa, final_states, meta)
+    result = fsm_lexer(string, state, transitions, final_states, meta)
 
     return tokenize(result['tokens'], tokenize_events)
 
@@ -132,14 +132,14 @@ will be an infinite loop.
 Args:
     string: String to be broken into tokens
     state: State state
-    dfa: See example DFA structure
+    transitions: See example transitions structure
     final_states: Accepting states
     meta: Dict that keeps track of found tokens, start state, current substring, and current accepted_token   
 
 Return:
     List of (name, value) tokens
 """
-def fsm_lexer(string, state, dfa, final_states, meta):  
+def fsm_lexer(string, state, transitions, final_states, meta):  
 
     if state in final_states:
         meta['accepted_token'] = (state, ''.join(meta['current_token']))
@@ -151,19 +151,19 @@ def fsm_lexer(string, state, dfa, final_states, meta):
             meta['tokens'].append(meta['accepted_token'])
         return meta
 
-    transitions = dfa[state]
+    state_transitions = transitions[state]
     next_state = None
 
-    for transition in transitions:
-        if re.match(transition[0], string[0]):
-            next_state = transition[1]
+    for state_transition in state_transitions:
+        if re.match(state_transition[0], string[0]):
+            next_state = state_transition[1]
             break
 
     if next_state:
         meta['current_token'].append(string[0])
-        return fsm_lexer(string[1:], next_state, dfa, final_states, meta)
+        return fsm_lexer(string[1:], next_state, transitions, final_states, meta)
     else:
         if meta['accepted_token']:
             meta['tokens'].append(meta['accepted_token'])
         meta['current_token'] = []
-        return fsm_lexer(string, meta['start_state'], dfa, final_states, meta)
+        return fsm_lexer(string, meta['start_state'], transitions, final_states, meta)
