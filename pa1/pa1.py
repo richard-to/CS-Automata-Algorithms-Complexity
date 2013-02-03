@@ -25,12 +25,12 @@ Lexer Result
 ('NOT_TOKEN', 'is'), ('NOT_TOKEN', 'on'), ('NOT_TOKEN', '2/5'), ('NOT_TOKEN', 'in'), 
 ('NOT_TOKEN', 'room'), ('24HOUR_TIME', '1300'), ('NOT_TOKEN', 'It'), ('NOT_TOKEN', 'will'), 
 ('NOT_TOKEN', 'last'), ('NOT_TOKEN', 'from'), ('INFORMAL_TIME', '1'), ('DASH', '-'), 
-('INFORMAL_TIME', '2'), ('AM_PM', 'PM'), ('NOT_TOKEN', 'There'), ('NOT_TOKEN', 'will'), 
+('INFORMAL_TIME', '2'), ('AM_PM', ' PM'), ('NOT_TOKEN', 'There'), ('NOT_TOKEN', 'will'), 
 ('NOT_TOKEN', 'be'), ('NOT_TOKEN', 'a'), ('NOT_TOKEN', 'sumptuous'), ('NOT_TOKEN', 'banquet'), 
-('NOT_TOKEN', 'afterward'), ('AT', 'at'), ('24HOUR_TIME', '1800'), ('NOT_TOKEN', 'hours'), 
+('NOT_TOKEN', 'afterward'), ('AT', ''), ('24HOUR_TIME', '1800'), ('NOT_TOKEN', 'hours'), 
 ('NOT_TOKEN', 'The'), ('NOT_TOKEN', 'address'), ('NOT_TOKEN', 'is'), ('24HOUR_TIME', '2300'), 
 ('NOT_TOKEN', 'Sycamore'), ('NOT_TOKEN', 'Lane'), ('NOT_TOKEN', 'Please'), ('NOT_TOKEN', 'RSVP'), 
-('NOT_TOKEN', 'by'), ('12HOUR_TIME', '5:30'), ('AM_PM', 'PM'), ('NOT_TOKEN', 'on'), 
+('NOT_TOKEN', 'by'), ('12HOUR_TIME', '5:30'), ('AM_PM', ' PM'), ('NOT_TOKEN', 'on'), 
 ('NOT_TOKEN', 'February'), ('INFORMAL_TIME', '1'), ('AT', 'at'), ('NOT_TOKEN', '786'), ('DASH', '-'), 
 ('NOT_TOKEN', '4819'), ('NOT_TOKEN', 'You'), ('NOT_TOKEN', 'can'), ('NOT_TOKEN', 'check'), 
 ('NOT_TOKEN', 'out'), ('NOT_TOKEN', 'our'), ('NOT_TOKEN', 'new'), ('NOT_TOKEN', 'wide'), 
@@ -40,8 +40,7 @@ Lexer Result
 
 Parser Result
 -------------
-['1-2 PM', '1800', '5:30 PM']
-
+('1-2 PM', '1800', '5:30 PM')
 """
 
 string = '"Hello Myra, the meeting is on 2/5 in room 1300. It will last from 1-2 PM. There will be a sumptuous banquet afterward at 1800 hours. The address is 2300 Sycamore Lane. Please RSVP by 5:30 PM on February 1 at 786-4819. You can check out our new wide screen set with the 16:9 aspect ratio!"'
@@ -176,8 +175,6 @@ tokenize_events = {
     'AM_PM': tokenize_leftpad,              
 }
 
-tokens = lex(string, lexer_q0, lexer_transitions, lexer_F, tokenize_events)
-
 parser_q0 = 'A'
 
 parser_transitions = {
@@ -220,4 +217,6 @@ parser_transitions = {
 
 parser_F = ('C', 'H', 'I', 'J', 'L')
 
-print parse(tokens, parser_q0, parser_transitions, parser_F)
+if __name__ == '__main__':
+    tokens = lex(string, lexer_q0, lexer_transitions, lexer_F, tokenize_events)
+    print parse(tokens, parser_q0, parser_transitions, parser_F)
