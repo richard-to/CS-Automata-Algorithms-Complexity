@@ -456,6 +456,21 @@ class TestTimeParserAutomaton(unittest.TestCase):
         )        
         stmts = parse(tokens, pa1.parser_q0, pa1.parser_transitions, pa1.parser_F)
         self.assertEqual(stmts, result)
-                       
+
+    def test_parser_backtracking(self):
+        tokens = (
+            ('24HOUR_TIME', '2322'),
+            ('TO', ' to '), 
+            ('12HOUR_TIME', '11:00'), 
+            ('AT', ''), 
+            ('12HOUR_TIME', '11:00'),                                                      
+        )
+        result = (
+            '11:00',
+            '11:00',
+        )        
+        stmts = parse(tokens, pa1.parser_q0, pa1.parser_transitions, pa1.parser_F)
+        self.assertEqual(stmts, result)
+                                             
 if __name__ == '__main__':
     unittest.main()
