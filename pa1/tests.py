@@ -1,6 +1,7 @@
 from fsm_lexer import lex, tokenize_ignore
 from fsm_parser import parse
 from fsm import fsm
+import pa1
 import unittest
 
 class TestFSM(unittest.TestCase):
@@ -339,7 +340,13 @@ class TestFSMParser(unittest.TestCase):
         final_states = ('D')
 
         result = parse(tokens, start_state, transitions, final_states)
-        self.assertEqual(result, ['( 3 )'])
+        self.assertEqual(result, ('(3)',))
+
+class TestTimeParserAutomaton(unittest.TestCase):
+    def test_lexer_not_token(self):
+        string = 'test test'
+        tokens = lex(string, pa1.lexer_q0, pa1.lexer_transitions, pa1.lexer_F, pa1.tokenize_events)
+        self.assertEqual(tokens, (('NOT_TOKEN', 'test'), ('NOT_TOKEN', 'test')))
 
 if __name__ == '__main__':
     unittest.main()
