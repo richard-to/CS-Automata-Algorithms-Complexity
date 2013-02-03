@@ -1,5 +1,45 @@
 import re
 
+"""
+Simple parser that uses a DFA.
+
+This method only works for very simple grammars.
+
+Args:
+    tokens: A tuple of (name, value) tuples that you would get from using my fsm_lexer module
+    state: Start state
+    transitions: See example for transition structure
+    final_states: A tuple of accepting states
+
+Return:
+    A tuple of strings
+
+Example:
+    tokens = (
+        ('OPEN_PAREN', '('),
+        ('INT', '3'),
+        ('CLOSE_PAREN', ')'),
+    )
+
+    start_state = 'A'
+
+    transitions = {
+        'A': (
+            ('OPEN_PAREN', 'B'),
+        ),
+        'B': (
+            ('INT', 'C'),
+        ),
+        'C': (
+            ('CLOSE_PAREN', 'D'),
+        ),
+        'D': (),                         
+    }
+
+    final_states = ('D')
+
+    result = parse(tokens, start_state, transitions, final_states)
+"""
 def parse(tokens, state, transitions, final_states):
     token_index = 0
     meta = {
@@ -9,8 +49,21 @@ def parse(tokens, state, transitions, final_states):
         'start_state': state
     }
     result = fsm_parser(tokens, token_index, state, transitions, final_states, meta)
-    return result['stmts']
+    return tuple(result['stmts'])
 
+
+"""
+Args:
+    tokens: A tuple of (name, value) tuples that you would get from using my fsm_lexer module
+    token_index: Current index position in tokens tuple
+    state: Start state
+    transitions: See example for transition structure
+    final_states: A tuple of accepting states
+    meta: A dictionary with the following keys: stmts, current_stmt, accepted_stmt, start_state
+Return:
+    A dictionary with the following keys: stmts, current_stmt, accepted_stmt, start_state.
+    The key of interest is the stmts list.
+"""
 def fsm_parser(tokens, token_index, state, transitions, final_states, meta):  
 
     if state in final_states:
