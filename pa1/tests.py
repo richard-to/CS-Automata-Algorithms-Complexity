@@ -7,57 +7,57 @@ class TestFSM(unittest.TestCase):
     def test_simple(self):
         string = 'a'
         start_state = 'A'
-        dfa = {
+        transitions = {
             'A': (('a', 'W'),),
             'W': ()
         }
         final_states = ('W')
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
     def test_empty(self):
         string = ''
         start_state = 'A'
-        dfa = {
+        transitions = {
             'A': (('a', 'W'),),
             'W': ()
         }
         final_states = ('A')
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
     def test_not_accepted(self):
         string = 'a'
         start_state = 'A'
-        dfa = {
+        transitions = {
             'A': (('a', 'W'),),
             'W': ()
         }
         final_states = ('A')        
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertFalse(result)
 
     def test_multiple_transitions_to_state(self):
         string = 'b'
         start_state = 'A'
-        dfa = {
+        transitions = {
             'A': ((r"[ab]", 'W'),),
             'W': ()
         }
         final_states = ('W')
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
 
     def test_multiple_final_states(self):
         string = 'b'
         start_state = 'A'
-        dfa = {
+        transitions = {
             'A': ((r"[ab]", 'W'),),
             'W': ()
         }
         final_states = ('A', 'W')
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
     def test_pa1_4a(self):
@@ -67,7 +67,7 @@ class TestFSM(unittest.TestCase):
         fail_string2 = '11'
 
         start_state = 'A'
-        dfa = {
+        transitions = {
             'A': (
                 ('0', 'D'),
                 ('1', 'B'),
@@ -86,16 +86,16 @@ class TestFSM(unittest.TestCase):
         }
         
         final_states = ('C')
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
-        result = fsm(string2, start_state, dfa, final_states)
+        result = fsm(string2, start_state, transitions, final_states)
         self.assertTrue(result) 
 
-        result = fsm(fail_string, start_state, dfa, final_states)
+        result = fsm(fail_string, start_state, transitions, final_states)
         self.assertFalse(result)        
 
-        result = fsm(fail_string2, start_state, dfa, final_states)
+        result = fsm(fail_string2, start_state, transitions, final_states)
         self.assertFalse(result)
 
     def test_pa1_4b(self):
@@ -103,7 +103,7 @@ class TestFSM(unittest.TestCase):
         fail_string = '000100010000'
 
         start_state = 'A'
-        dfa = {
+        transitions = {
             'A': (
                 ('0', 'A'),
                 ('1', 'B'),
@@ -123,10 +123,10 @@ class TestFSM(unittest.TestCase):
         }
         final_states = ('D')
 
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
-        result = fsm(fail_string, start_state, dfa, final_states)
+        result = fsm(fail_string, start_state, transitions, final_states)
         self.assertFalse(result)
 
     def test_pa1_4c(self):
@@ -136,7 +136,7 @@ class TestFSM(unittest.TestCase):
 
         start_state = 'A'
 
-        dfa = {
+        transitions = {
             'A': (
                 (r"[01]", 'B'),
             ),
@@ -162,13 +162,13 @@ class TestFSM(unittest.TestCase):
 
         final_states = ('A', 'B', 'C', 'D', 'E', 'F')
 
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
-        result = fsm(string2, start_state, dfa, final_states)
+        result = fsm(string2, start_state, transitions, final_states)
         self.assertTrue(result)
 
-        result = fsm(fail_string, start_state, dfa, final_states)
+        result = fsm(fail_string, start_state, transitions, final_states)
         self.assertFalse(result)        
 
     def test_pa1_4d(self):
@@ -179,7 +179,7 @@ class TestFSM(unittest.TestCase):
 
         start_state = 'A'
 
-        dfa = {
+        transitions = {
             'A': (
                 (r"[01]", 'B'),
             ),
@@ -200,16 +200,16 @@ class TestFSM(unittest.TestCase):
 
         final_states = ('D')
 
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
-        result = fsm(string2, start_state, dfa, final_states)
+        result = fsm(string2, start_state, transitions, final_states)
         self.assertTrue(result)
 
-        result = fsm(fail_string, start_state, dfa, final_states)
+        result = fsm(fail_string, start_state, transitions, final_states)
         self.assertFalse(result)
 
-        result = fsm(fail_string2, start_state, dfa, final_states)
+        result = fsm(fail_string2, start_state, transitions, final_states)
         self.assertFalse(result)
 
     def test_pa1_4e(self):
@@ -220,7 +220,7 @@ class TestFSM(unittest.TestCase):
 
         start_state = 'A'
 
-        dfa = {
+        transitions = {
             'A': (
                 ('0', 'A'),
                 ('1', 'B'),
@@ -240,16 +240,16 @@ class TestFSM(unittest.TestCase):
 
         final_states = ('C')
 
-        result = fsm(string, start_state, dfa, final_states)
+        result = fsm(string, start_state, transitions, final_states)
         self.assertTrue(result)
 
-        result = fsm(string2, start_state, dfa, final_states)
+        result = fsm(string2, start_state, transitions, final_states)
         self.assertTrue(result)
 
-        result = fsm(fail_string, start_state, dfa, final_states)
+        result = fsm(fail_string, start_state, transitions, final_states)
         self.assertFalse(result)
 
-        result = fsm(fail_string2, start_state, dfa, final_states)
+        result = fsm(fail_string2, start_state, transitions, final_states)
         self.assertFalse(result)
 
 class TestFSMLexer(unittest.TestCase):
@@ -263,7 +263,7 @@ class TestFSMLexer(unittest.TestCase):
             'B': tokenize_ignore
         }
 
-        dfa = {
+        transitions = {
             'A': (
                 (r'[^01 ]', 'H'),
                 (' ', 'B'),
@@ -307,7 +307,7 @@ class TestFSMLexer(unittest.TestCase):
 
         result = (('ERROR', 'test'), ('ERROR', '11a'), ('ERROR', '110'), ('ERROR', 'test'), ('E', '111'))
 
-        tokens = lex(string, start_state, dfa, final_states, tokenize_events)
+        tokens = lex(string, start_state, transitions, final_states, tokenize_events)
         self.assertEqual(tokens, result)
 
 if __name__ == '__main__':
