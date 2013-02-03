@@ -43,7 +43,6 @@ Example Usage:
 
     final_states = ('C')
 """
-
 def fsm(string, state, dfa, final_states):  
     if len(string) == 0:
         return state in final_states
