@@ -1,4 +1,5 @@
 from fsm_lexer import lex, tokenize_ignore
+from fsm_parser import parse
 from fsm import fsm
 import unittest
 
@@ -309,6 +310,36 @@ class TestFSMLexer(unittest.TestCase):
 
         tokens = lex(string, start_state, transitions, final_states, tokenize_events)
         self.assertEqual(tokens, result)
+
+
+class TestFSMParser(unittest.TestCase):
+    
+    def test_simple(self):
+        tokens = (
+            ('OPEN_PAREN', '('),
+            ('INT', '3'),
+            ('CLOSE_PAREN', ')'),
+        )
+
+        start_state = 'A'
+
+        transitions = {
+            'A': (
+                ('OPEN_PAREN', 'B'),
+            ),
+            'B': (
+                ('INT', 'C'),
+            ),
+            'C': (
+                ('CLOSE_PAREN', 'D'),
+            ),
+            'D': (),                         
+        }
+
+        final_states = ('D')
+
+        result = parse(tokens, start_state, transitions, final_states)
+        self.assertEqual(result, ['( 3 )'])
 
 if __name__ == '__main__':
     unittest.main()
