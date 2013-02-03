@@ -16,6 +16,9 @@ There is no backtracking implemented.
 
 Uses maximal munch rule, so longest substring will be tokenized.
 
+Note: Make sure that the start state of the DFA has transitions for all letters. If not there
+will be an infinite loop.
+
 Args:
     string: String to be broken into tokens
     state: State state
@@ -122,6 +125,9 @@ def tokenize_ignore(token):
 
 """
 A modified finite state machine that can parse substring tokens from a string.
+
+Note: Make sure that the start state of the DFA has transitions for all letters. If not there
+will be an infinite loop.
 
 Args:
     string: String to be broken into tokens
