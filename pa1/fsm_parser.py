@@ -53,6 +53,16 @@ def parse(tokens, state, transitions, final_states):
 
 
 """
+The fsm_parser is called by the parse function.
+
+There are some differences between this function and the fsm_lexer.
+
+The first difference is that a tuple of tokens is used instead of a string.
+Instead of going character by character, we go token by token.
+
+The other big difference is that fsm_parser will backtrack to the last accepted state 
+if the parser errors out before reaching another accepted state.
+
 Args:
     tokens: A tuple of (name, value) tuples that you would get from using my fsm_lexer module
     token_index: Current index position in tokens tuple
@@ -68,8 +78,6 @@ def fsm_parser(tokens, token_index, state, transitions, final_states, meta):
 
     if state in final_states:
         meta['accepted_stmt'] = ''.join(meta['current_stmt'])
-    else:
-        meta['accepted_stmt'] = None
 
     if token_index >= len(tokens):
         if meta['accepted_stmt']:
@@ -91,5 +99,6 @@ def fsm_parser(tokens, token_index, state, transitions, final_states, meta):
     else:
         if meta['accepted_stmt']:
             meta['stmts'].append(meta['accepted_stmt'])
+        meta['accepted_stmt'] = None            
         meta['current_stmt'] = []
         return fsm_parser(tokens, token_index, meta['start_state'], transitions, final_states, meta)
