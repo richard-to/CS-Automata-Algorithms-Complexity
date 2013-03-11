@@ -1,1 +1,1 @@
-Programming assigmments for CS351 Automata, Algorithms and Complexity
+Programming assigmments for Automata, Algorithms and Complexity
